@@ -3,14 +3,21 @@ class Api::V1::ProductsController < ApplicationController
   
    # GET /products
       def index
-        products = Product.all
+        products = Product.all.map  do |product|
+          product.as_json.merge(
+            image_url: product.image.attached? ? url_for(product.image) : nil
+          )
+        end
         render json: products
       end
 
       # GET /products/:id
       def show
         product = Product.find(params[:id])
-        render json: product
+        product_with_image = product.as_json.merge(
+          image_url: product.image.attached? ? url_for(product.image) : nil
+        )
+        render json: product_with_image
       end
 
       # POST /products
