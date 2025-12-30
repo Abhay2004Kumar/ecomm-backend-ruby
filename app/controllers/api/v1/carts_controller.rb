@@ -1,13 +1,22 @@
 class Api::V1::CartsController < ApplicationController
-   def show
-        cart = Cart.find_by(user_id: params[:user_id])
+  #  def show
+  #       cart = Cart.find_by(user_id: params[:user_id])
 
-        render json: cart.as_json(
-          include: {
-            cart_items: {
-              include: :product
-            }
-          }
-        )
-      end
+  #       render json: cart.as_json(
+  #         include: {
+  #           cart_items: {
+  #             include: :product
+  #           }
+  #         }
+  #       )
+  #     end
+
+  include AuthenticateUser
+
+  def show
+    render json: @current_user.cart.as_json(
+      include: { cart_items: { include: :product } }
+    )
+  end
+
 end
