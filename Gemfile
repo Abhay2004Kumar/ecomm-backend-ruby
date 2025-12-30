@@ -15,6 +15,9 @@ gem "bcrypt", "~> 3.1.7"
 
 gem "cloudinary"
 
+gem "jwt"
+
+
 
 # dotenv for environment variables
 gem 'dotenv-rails', groups: [:development, :test]
