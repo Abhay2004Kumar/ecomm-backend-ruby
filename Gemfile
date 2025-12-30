@@ -13,6 +13,9 @@ gem "puma", ">= 5.0"
 # bcrypt
 gem "bcrypt"
 
+gem "cloudinary"
+
+
 # dotenv for environment variables
 gem 'dotenv-rails', groups: [:development, :test]
 
