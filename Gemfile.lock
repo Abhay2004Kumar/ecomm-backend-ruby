@@ -337,7 +337,7 @@ PLATFORMS
   x86_64-linux
 
 DEPENDENCIES
-  bcrypt
+  bcrypt (~> 3.1.7)
   bootsnap
   brakeman
   bundler-audit
