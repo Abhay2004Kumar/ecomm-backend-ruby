@@ -17,6 +17,7 @@ gem "cloudinary"
 
 gem "jwt"
 
+gem "stripe"
 
 
 # dotenv for environment variables

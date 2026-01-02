@@ -36,8 +36,10 @@ class Api::V1::OrdersController < ApplicationController
   def create
     cart = @current_user.cart
 
-    order = @current_user.orders.create!(status: "placed", total_amount: 0)
-    total = 0
+    order = @current_user.orders.create!(
+      status: "paid",
+      total_amount: cart_total(cart)
+    )
 
     cart.cart_items.each do |item|
       order.order_items.create!(
@@ -45,12 +47,9 @@ class Api::V1::OrdersController < ApplicationController
         quantity: item.quantity,
         price: item.product.price
       )
-      total += item.quantity * item.product.price
     end
 
-    order.update(total_amount: total)
     cart.cart_items.destroy_all
-
     render json: order, status: :created
   end
 
