@@ -53,4 +53,15 @@ class Api::V1::OrdersController < ApplicationController
     render json: order, status: :created
   end
 
+  def index
+    render json: @current_user.orders, status: :ok
+  end
+
+  private
+  def cart_total(cart)
+    cart.cart_items.sum do |item|
+      item.quantity * item.product.price
+    end
+  end
+
 end

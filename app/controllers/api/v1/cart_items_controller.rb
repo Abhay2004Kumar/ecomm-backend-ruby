@@ -40,5 +40,22 @@ class Api::V1::CartItemsController < ApplicationController
 
     render json: cart_item, status: :created
   end
+
+  def update
+    cart_item = @current_user.cart.cart_items.find(params[:id])
+
+    if cart_item.update(quantity: params[:quantity])
+      render json: cart_item, status: :ok
+    else
+      render json: { errors: cart_item.errors.full_messages }, status: :unprocessable_entity
+    end
+  end
+
+  def destroy
+    cart_item = @current_user.cart.cart_items.find(params[:id])
+    cart_item.destroy
+
+    render json: { message: "Item removed from cart" }, status: :ok
+  end
     
 end

@@ -10,6 +10,12 @@ class Api::V1::PaymentsController < ApplicationController
 
         amount = calculate_amount(cart)
 
+        if amount < 50
+          return render json: {
+          error: "Minimum order amount is ₹50"
+          }, status: :unprocessable_entity
+        end
+
         intent = Stripe::PaymentIntent.create(
           amount: (amount * 100).to_i, # Stripe uses paise
           currency: "inr",
