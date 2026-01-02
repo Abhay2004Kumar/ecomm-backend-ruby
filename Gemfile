@@ -19,6 +19,9 @@ gem "jwt"
 
 gem "stripe"
 
+gem "rack-cors"
+
+
 
 # dotenv for environment variables
 gem 'dotenv-rails', groups: [:development, :test]
