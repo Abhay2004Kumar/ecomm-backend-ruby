@@ -50,6 +50,10 @@ class Api::V1::OrdersController < ApplicationController
     end
 
     cart.cart_items.destroy_all
+    
+    # Send order confirmation email
+    OrderMailer.order_confirmation(order).deliver_later
+    
     render json: order, status: :created
   end
 
