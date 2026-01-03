@@ -40,12 +40,16 @@ class Api::V1::WebhooksController < ApplicationController
           total_amount: intent.amount / 100.0
         )
 
+        # Create order items and update stock
         cart.cart_items.each do |item|
           order.order_items.create!(
             product: item.product,
             quantity: item.quantity,
             price: item.product.price
           )
+          
+          # Decrement product stock
+          item.product.decrement!(:stock, item.quantity)
         end
         
         Payment.create!(
@@ -57,6 +61,8 @@ class Api::V1::WebhooksController < ApplicationController
         )
 
         cart.cart_items.destroy_all
+
+        
   end
 
   def handle_payment_failure(intent)

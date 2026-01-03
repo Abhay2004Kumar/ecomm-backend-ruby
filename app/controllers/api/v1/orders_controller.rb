@@ -36,17 +36,30 @@ class Api::V1::OrdersController < ApplicationController
   def create
     cart = @current_user.cart
 
+    # Validate stock availability
+    cart.cart_items.each do |item|
+      if item.product.stock < item.quantity
+        return render json: { 
+          error: "Insufficient stock for #{item.product.name}. Available: #{item.product.stock}" 
+        }, status: :unprocessable_entity
+      end
+    end
+
     order = @current_user.orders.create!(
       status: "paid",
       total_amount: cart_total(cart)
     )
 
+    # Create order items and update stock
     cart.cart_items.each do |item|
       order.order_items.create!(
         product: item.product,
         quantity: item.quantity,
         price: item.product.price
       )
+      
+      # Decrement product stock
+      item.product.decrement!(:stock, item.quantity)
     end
 
     cart.cart_items.destroy_all

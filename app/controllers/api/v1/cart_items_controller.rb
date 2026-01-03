@@ -35,7 +35,16 @@ class Api::V1::CartItemsController < ApplicationController
     product = Product.find(params[:product_id])
 
     cart_item = cart.cart_items.find_or_initialize_by(product: product)
-    cart_item.quantity = (cart_item.quantity || 0) + params[:quantity].to_i
+    new_quantity = (cart_item.quantity || 0) + params[:quantity].to_i
+    
+    # Validate stock availability
+    if new_quantity > product.stock
+      return render json: { 
+        error: "Insufficient stock. Available: #{product.stock}" 
+      }, status: :unprocessable_entity
+    end
+    
+    cart_item.quantity = new_quantity
     cart_item.save
 
     render json: cart_item, status: :created
@@ -43,6 +52,13 @@ class Api::V1::CartItemsController < ApplicationController
 
   def update
     cart_item = @current_user.cart.cart_items.find(params[:id])
+    
+    # Validate stock availability
+    if params[:quantity].to_i > cart_item.product.stock
+      return render json: { 
+        error: "Insufficient stock. Available: #{cart_item.product.stock}" 
+      }, status: :unprocessable_entity
+    end
 
     if cart_item.update(quantity: params[:quantity])
       render json: cart_item, status: :ok
